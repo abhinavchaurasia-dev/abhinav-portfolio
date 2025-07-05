@@ -9,7 +9,7 @@ import {
 import emailjs from 'emailjs-com';
 import './App.css';
 
-const Portfolio = () => {
+const Portfolio = React.memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -28,6 +28,7 @@ const Portfolio = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
+  const [projectFilter, setProjectFilter] = useState('all');
   const observerRef = useRef(null);
   const formRef = useRef();
 
@@ -124,18 +125,40 @@ const Portfolio = () => {
     setIsSubmitting(true);
     setSubmitStatus('');
 
+    // Basic form validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSubmitStatus('validation_error');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      // Replace with your EmailJS service details
-      await emailjs.sendForm(
-        'your_service_id',
-        'your_template_id',
-        formRef.current,
-        'your_public_key'
+      // EmailJS integration - replace with your actual service details
+      const result = await emailjs.send(
+        'service_your_id', // Replace with your EmailJS service ID
+        'template_your_id', // Replace with your EmailJS template ID
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_email: 'abhinavc037@gmail.com',
+        },
+        'your_public_key' // Replace with your EmailJS public key
       );
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      
+      if (result.status === 200) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        
+        // Auto-clear success message after 5 seconds
+        setTimeout(() => setSubmitStatus(''), 5000);
+      }
     } catch (error) {
+      console.error('EmailJS Error:', error);
       setSubmitStatus('error');
+      
+      // Auto-clear error message after 5 seconds
+      setTimeout(() => setSubmitStatus(''), 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -163,7 +186,7 @@ const Portfolio = () => {
     { id: 'contact', label: 'Contact', icon: Phone }
   ];
 
-  const projects = [
+  const projects = useMemo(() => [
     {
       title: "InternTrackr",
       subtitle: "Internship Progress Tracker",
@@ -191,7 +214,7 @@ const Portfolio = () => {
       live: "#",
       icon: Smartphone
     }
-  ];
+  ], []);
 
   const skills = {
     "Languages": ["JavaScript", "Python", "SQL"],
@@ -444,13 +467,15 @@ const Portfolio = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <motion.button
+                <motion.a
+                  href="/resume.pdf" // Add your resume PDF to public folder
+                  download="Abhinav_Chaurasia_Resume.pdf"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
-                  📄 Resume
-                </motion.button>
+                  📄 Download Resume
+                </motion.a>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -876,10 +901,19 @@ const Portfolio = () => {
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </button>
                   {submitStatus === 'success' && (
-                    <p className="text-green-600 dark:text-green-400 text-center">Message sent successfully!</p>
+                    <div className="text-green-600 dark:text-green-400 text-center bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                      ✅ Message sent successfully! I'll get back to you soon.
+                    </div>
                   )}
                   {submitStatus === 'error' && (
-                    <p className="text-red-600 dark:text-red-400 text-center">Failed to send message. Please try again.</p>
+                    <div className="text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                      ❌ Failed to send message. Please try again or contact me directly.
+                    </div>
+                  )}
+                  {submitStatus === 'validation_error' && (
+                    <div className="text-yellow-600 dark:text-yellow-400 text-center bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                      ⚠️ Please fill in all required fields.
+                    </div>
                   )}
                 </form>
               </motion.div>
