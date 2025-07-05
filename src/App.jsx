@@ -66,7 +66,7 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('darkMode', isDarkMode);
+      localStorage.setItem('darkMode', isDarkMode.toString());
       if (isDarkMode) {
         document.documentElement.classList.add('dark');
       } else {
