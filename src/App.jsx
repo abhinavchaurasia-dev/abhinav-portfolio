@@ -7,6 +7,7 @@ import {
   Terminal, Cloud, Book, Linkedin, Twitter
 } from 'lucide-react';
 import emailjs from 'emailjs-com';
+import './App.css';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -923,33 +924,7 @@ const Portfolio = () => {
           )}
         </AnimatePresence>
 
-        {/* Custom CSS for animations */}
-        <style jsx>{`
-          @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
-          }
-          .animate-blob {
-            animation: blob 7s infinite;
-          }
-          .animation-delay-2000 {
-            animation-delay: 2s;
-          }
-          .animation-delay-4000 {
-            animation-delay: 4s;
-          }
-          .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-          html {
-            scroll-behavior: smooth;
-          }
-        `}</style>
+        
       </div>
     </div>
   );
