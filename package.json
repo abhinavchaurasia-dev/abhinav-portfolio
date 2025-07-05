@@ -21,10 +21,13 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@tailwindcss/postcss": "^4.1.11",
     "autoprefixer": "^10.4.21",
+    "framer-motion": "^12.23.0",
     "lucide-react": "^0.525.0",
     "postcss": "^8.5.6",
+    "react-router-dom": "^7.6.3",
     "tailwindcss": "^4.1.11"
   }
 }
