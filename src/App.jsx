@@ -71,7 +71,7 @@ const Portfolio = React.memo(() => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('darkMode', isDarkMode.toString());
-      
+
       // Force remove and add classes to ensure proper toggle
       document.documentElement.classList.remove('dark');
       if (isDarkMode) {
@@ -99,7 +99,7 @@ const Portfolio = React.memo(() => {
       const script = document.createElement('script');
       script.type = 'application/ld+json';
       script.textContent = JSON.stringify(structuredData);
-      
+
       const existingScript = document.querySelector('script[type="application/ld+json"]');
       if (existingScript) {
         existingScript.remove();
@@ -145,18 +145,18 @@ const Portfolio = React.memo(() => {
         },
         'your_public_key' // Replace with your EmailJS public key
       );
-      
+
       if (result.status === 200) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', message: '' });
-        
+
         // Auto-clear success message after 5 seconds
         setTimeout(() => setSubmitStatus(''), 5000);
       }
     } catch (error) {
       console.error('EmailJS Error:', error);
       setSubmitStatus('error');
-      
+
       // Auto-clear error message after 5 seconds
       setTimeout(() => setSubmitStatus(''), 5000);
     } finally {
@@ -1015,26 +1015,3 @@ const Portfolio = React.memo(() => {
             </div>
           </div>
         </footer>
-
-        {/* Back to Top Button */}
-        <AnimatePresence>
-          {showBackToTop && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              onClick={() => scrollToSection('home')}
-              className="fixed bottom-8 right-8 p-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50"
-            >
-              <ChevronUp size={24} />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        
-      </div>
-    </div>
-  );
-};
-
-export default Portfolio;
