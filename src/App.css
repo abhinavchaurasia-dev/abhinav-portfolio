@@ -31,6 +31,7 @@ html {
 
 .animate-blob {
   animation: blob 7s infinite;
+  will-change: transform;
 }
 
 .animation-delay-2000 {
@@ -46,4 +47,35 @@ html {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Performance optimizations */
+* {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-blob {
+    animation: none;
+  }
+}
+
+/* Improve paint performance */
+.bg-gradient-to-r,
+.bg-gradient-to-br {
+  will-change: background;
+}
+
+/* Smooth transitions for theme switching */
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }

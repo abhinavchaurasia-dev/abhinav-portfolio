@@ -72,6 +72,34 @@ const Portfolio = () => {
       } else {
         document.documentElement.classList.remove('dark');
       }
+
+      // Add structured data for SEO
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Abhinav Chaurasia",
+        "jobTitle": "Web Developer & AI Explorer",
+        "description": "B.Tech CSE student crafting future-ready web solutions and building with AI innovations",
+        "url": "https://abhinavchaurasia.vercel.app",
+        "sameAs": [
+          "https://github.com/Abhinav-Chaurasia-220304",
+          "https://www.linkedin.com/in/abhinav-chaurasia-83741b257",
+          "https://x.com/Abhinav_C_22"
+        ],
+        "alumniOf": "University of Lucknow",
+        "knowsAbout": ["Web Development", "React", "Node.js", "MongoDB", "Artificial Intelligence", "JavaScript", "Python"],
+        "email": "abhinavc037@gmail.com"
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      
+      const existingScript = document.querySelector('script[type="application/ld+json"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      document.head.appendChild(script);
     }
   }, [isDarkMode]);
 
@@ -235,7 +263,38 @@ const Portfolio = () => {
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut"
+      } 
+    }
+  };
+
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -60 },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut"
+      } 
+    }
+  };
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 60 },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut"
+      } 
+    }
   };
 
   const staggerContainer = {
@@ -243,13 +302,20 @@ const Portfolio = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.15,
+        delayChildren: 0.1
       }
     }
   };
 
   const scaleOnHover = {
-    hover: { scale: 1.05, transition: { duration: 0.2 } }
+    hover: { 
+      scale: 1.05, 
+      transition: { 
+        duration: 0.2,
+        ease: "easeInOut"
+      } 
+    }
   };
 
   return (
@@ -470,8 +536,11 @@ const Portfolio = () => {
                 variants={fadeInUp}
                 className="relative"
               >
-                <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center">
-                  <User size={120} className="text-gray-400 dark:text-gray-600" />
+                <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center overflow-hidden">
+                  <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                    <User size={80} className="text-white" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
+                  </div>
                 </div>
               </motion.div>
             </div>
