@@ -1,19 +1,12 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import emailjs from '@emailjs/browser';
-import './App.css';
 import { 
-  Menu, X, Github, Linkedin, Twitter, Mail, ExternalLink, 
-  Download, User, Code, Briefcase, Award, Phone, Sun, Moon,
-  Calendar, MapPin, ChevronRight, Star, Zap, Database, Globe,
-  Cpu, Smartphone, Cloud, Book, Target, Users, CheckCircle,
-  Send, ArrowUp, Eye, Play, Pause
+  Menu, X, Sun, Moon, ChevronUp, ExternalLink, Github, Mail, 
+  User, Code, Zap, Briefcase, Award, Phone, MapPin, Calendar,
+  Users, Database, Globe, Smartphone, Bot, Cpu, GitBranch,
+  Terminal, Cloud, Book, Linkedin, Twitter
 } from 'lucide-react';
-
-// Initialize EmailJS
-emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+import emailjs from 'emailjs-com';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,14 +48,12 @@ const Portfolio = () => {
     }, observerOptions);
 
     const sections = document.querySelectorAll('section[id]');
-    sections.forEach(section => {
-      observerRef.current.observe(section);
-    });
+    sections.forEach(section => observerRef.current.observe(section));
 
     window.addEventListener('scroll', handleScroll);
 
     // Simulate loading
-    setTimeout(() => setIsLoading(false), 1000);
+    setTimeout(() => setIsLoading(false), 1500);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -73,56 +64,44 @@ const Portfolio = () => {
   }, []);
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('darkMode', isDarkMode);
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, [isDarkMode]);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
     setIsMenuOpen(false);
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('');
 
     try {
-      const result = await emailjs.sendForm(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+      // Replace with your EmailJS service details
+      await emailjs.sendForm(
+        'your_service_id',
+        'your_template_id',
         formRef.current,
-        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+        'your_public_key'
       );
-      
-      console.log('Email sent successfully:', result.text);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
-      console.error('Email send failed:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -157,146 +136,82 @@ const Portfolio = () => {
       subtitle: "Internship Progress Tracker",
       description: "A full-stack platform for students to log internship details, track tasks, and store mentor feedback – all in one dashboard.",
       tech: ["MongoDB", "Express.js", "React", "Node.js"],
-      github: "https://github.com/Abhinav-Chaurasia-220304/interntrackr",
-      live: "https://interntrackr.vercel.app",
-      icon: Target,
-      featured: true
+      github: "#",
+      live: "#",
+      icon: Briefcase
     },
     {
       title: "CoverGenie",
       subtitle: "AI-Powered Cover Letter Generator",
       description: "Generates personalized cover letters using GenAI APIs by analyzing resumes and job descriptions – tailored for every opportunity.",
       tech: ["React", "OpenRouter API", "LangChain"],
-      github: "https://github.com/Abhinav-Chaurasia-220304/covergenie",
-      live: "https://covergenie.vercel.app",
-      icon: Cpu,
-      featured: true
+      github: "#",
+      live: "#",
+      icon: Bot
     },
     {
       title: "SnapNoteQR",
       subtitle: "QR Notepad for Fast Sharing",
       description: "Type notes and share them instantly as QR codes. Simplify how you capture and share ideas on the go.",
       tech: ["HTML", "TailwindCSS", "JavaScript", "QR APIs"],
-      github: "https://github.com/Abhinav-Chaurasia-220304/snapnoteqr",
-      live: "https://snapnoteqr.vercel.app",
-      icon: Smartphone,
-      featured: false
+      github: "#",
+      live: "#",
+      icon: Smartphone
     }
   ];
 
-  const skillCategories = [
-    {
-      category: "Languages",
-      skills: [
-        { name: "JavaScript", level: 90 },
-        { name: "Python", level: 85 },
-        { name: "SQL", level: 80 }
-      ],
-      icon: Code
-    },
-    {
-      category: "Frontend",
-      skills: [
-        { name: "React", level: 90 },
-        { name: "HTML", level: 95 },
-        { name: "CSS", level: 90 },
-        { name: "Tailwind", level: 85 }
-      ],
-      icon: Globe
-    },
-    {
-      category: "Backend",
-      skills: [
-        { name: "Node.js", level: 85 },
-        { name: "Express.js", level: 80 }
-      ],
-      icon: Database
-    },
-    {
-      category: "Databases",
-      skills: [
-        { name: "MongoDB", level: 85 },
-        { name: "MySQL", level: 80 }
-      ],
-      icon: Database
-    },
-    {
-      category: "AI Tools",
-      skills: [
-        { name: "OpenRouter", level: 75 },
-        { name: "LangChain", level: 70 },
-        { name: "Prompt Engineering", level: 80 }
-      ],
-      icon: Cpu
-    },
-    {
-      category: "Dev Tools",
-      skills: [
-        { name: "Git", level: 90 },
-        { name: "GitHub", level: 90 },
-        { name: "VS Code", level: 95 },
-        { name: "Postman", level: 85 }
-      ],
-      icon: Code
-    },
-    {
-      category: "Cloud & Deployment",
-      skills: [
-        { name: "Netlify", level: 80 },
-        { name: "Vercel", level: 85 }
-      ],
-      icon: Cloud
-    }
-  ];
+  const skills = {
+    "Languages": ["JavaScript", "Python", "SQL"],
+    "Frontend": ["React", "HTML", "CSS", "Tailwind"],
+    "Backend": ["Node.js", "Express.js"],
+    "Databases": ["MongoDB", "MySQL"],
+    "AI Tools": ["OpenRouter", "LangChain", "Prompt Engineering"],
+    "Dev Tools": ["Git", "GitHub", "VS Code", "Postman"],
+    "Cloud & Deployment": ["Netlify", "Vercel"],
+    "Currently Learning": ["Advanced JS", "API development", "GenAI architectures"]
+  };
 
   const certifications = [
     {
       title: "Microsoft Certified: Azure AI Fundamentals",
       issuer: "Microsoft",
       date: "Oct 2024",
-      icon: "🏅",
-      credentialId: "AI-100",
-      skills: ["Azure AI", "Machine Learning", "Cognitive Services"]
+      credentialId: "ABC123",
+      link: "#",
+      icon: Bot
     },
     {
       title: "Google IT Automation with Python",
       issuer: "Google",
       date: "Jun 2024",
-      icon: "🧰",
-      credentialId: "PY-AUTO-2024",
-      skills: ["Python", "Automation", "Git"]
+      credentialId: "GCP456",
+      link: "#",
+      icon: Cpu
     },
     {
       title: "Google IT Support Specialization",
       issuer: "Google",
       date: "Jun 2024",
-      icon: "🔧",
-      credentialId: "IT-SUP-2024",
-      skills: ["IT Support", "Networking", "Security"]
+      credentialId: "GIT789",
+      link: "#",
+      icon: Terminal
     },
     {
       title: "Google UX Design Specialization",
       issuer: "Google",
       date: "Jun 2024",
-      icon: "🎨",
-      credentialId: "UX-DES-2024",
-      skills: ["User Research", "Prototyping", "Design Systems"]
+      credentialId: "GUX012",
+      link: "#",
+      icon: Globe
     },
     {
       title: "Reinforcement Learning",
       issuer: "University of Alberta",
       date: "Jun 2024",
-      icon: "🧠",
-      credentialId: "RL-2024",
-      skills: ["Machine Learning", "AI", "Python"]
+      credentialId: "UAB345",
+      link: "#",
+      icon: Book
     }
-  ];
-
-  const stats = [
-    { label: "Projects Completed", value: "15+", icon: Code },
-    { label: "Technologies", value: "20+", icon: Zap },
-    { label: "Certifications", value: "5", icon: Award },
-    { label: "Years Learning", value: "3+", icon: Book }
   ];
 
   const experience = [
@@ -332,117 +247,65 @@ const Portfolio = () => {
     }
   };
 
+  const scaleOnHover = {
+    hover: { scale: 1.05, transition: { duration: 0.2 } }
+  };
+
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
       <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+
         {/* Navigation */}
-        <motion.nav 
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6 }}
-          className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-            isScrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20 dark:border-gray-700/20' : 'bg-transparent'
-          }`}
-        >
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isScrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20 dark:border-gray-700/20' : 'bg-transparent'
+        }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="flex-shrink-0"
-              >
-                <button onClick={() => scrollToSection('home')} className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <div className="flex-shrink-0">
+                <button onClick={() => scrollToSection('home')} className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform">
                   Abhinav
                 </button>
-              </motion.div>
+              </div>
 
               {/* Desktop Navigation */}
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
-                  {navItems.map((item) => (
-                    <motion.button
-                      key={item.id}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                        activeSection === item.id
-                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                          : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      {item.label}
-                    </motion.button>
-                  ))}
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToSection(item.id)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-1 ${
+                          activeSection === item.id
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon size={16} />
+                        {item.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Dark Mode Toggle */}
-              <div className="flex items-center space-x-4">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={toggleDarkMode}
-                  className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  aria-label="Toggle dark mode"
+              {/* Theme Toggle & Mobile Menu */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
-                  <AnimatePresence mode="wait">
-                    {isDarkMode ? (
-                      <motion.div
-                        key="sun"
-                        initial={{ opacity: 0, rotate: -180 }}
-                        animate={{ opacity: 1, rotate: 0 }}
-                        exit={{ opacity: 0, rotate: 180 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Sun className="h-5 w-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="moon"
-                        initial={{ opacity: 0, rotate: 180 }}
-                        animate={{ opacity: 1, rotate: 0 }}
-                        exit={{ opacity: 0, rotate: -180 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Moon className="h-5 w-5" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
+                  {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
 
-                {/* Mobile menu button */}
                 <div className="md:hidden">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                  <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    aria-label="Toggle menu"
+                    className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                   >
-                    <AnimatePresence mode="wait">
-                      {isMenuOpen ? (
-                        <motion.div
-                          key="close"
-                          initial={{ opacity: 0, rotate: -90 }}
-                          animate={{ opacity: 1, rotate: 0 }}
-                          exit={{ opacity: 0, rotate: 90 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <X className="h-6 w-6" />
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="menu"
-                          initial={{ opacity: 0, rotate: 90 }}
-                          animate={{ opacity: 1, rotate: 0 }}
-                          exit={{ opacity: 0, rotate: -90 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Menu className="h-6 w-6" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
+                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -455,155 +318,85 @@ const Portfolio = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="md:hidden"
+                className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700"
               >
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 shadow-lg border-t border-gray-200 dark:border-gray-700">
-                  {navItems.map((item, index) => (
-                    <motion.button
-                      key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center space-x-2 ${
-                        activeSection === item.id
-                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                          : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </motion.button>
-                  ))}
+                <div className="px-2 pt-2 pb-3 space-y-1">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToSection(item.id)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center gap-2 ${
+                          activeSection === item.id
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon size={18} />
+                        {item.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.nav>
+        </nav>
 
         {/* Hero Section */}
         <section id="home" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden">
           {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden">
-            <motion.div 
-              animate={{ 
-                x: [0, 100, 0],
-                y: [0, -100, 0],
-              }}
-              transition={{ 
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-            />
-            <motion.div 
-              animate={{ 
-                x: [0, -100, 0],
-                y: [0, 100, 0],
-              }}
-              transition={{ 
-                duration: 25,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-            />
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360],
-              }}
-              transition={{ 
-                duration: 30,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-            />
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           </div>
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
             <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <motion.h1 
-                variants={fadeInUp}
-                className="text-4xl md:text-6xl font-bold mb-6"
-              >
-                <motion.span 
-                  animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                  className="inline-block text-4xl md:text-6xl"
-                >
-                  👋
-                </motion.span>{' '}
-                Hi, I'm{' '}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+                <span className="block text-gray-900 dark:text-white">👋 Hi, I'm </span>
+                <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Abhinav
                 </span>
-              </motion.h1>
-
-              <motion.h2 
-                variants={fadeInUp}
-                className="text-xl md:text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-300"
-              >
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-4">
                 Web Developer & AI Explorer
-              </motion.h2>
-
-              <motion.p 
-                variants={fadeInUp}
-                className="text-lg md:text-xl mb-8 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
-              >
+              </p>
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
                 B.Tech CSE student crafting future-ready web solutions and building with AI innovations.
-              </motion.p>
+              </p>
 
-              {/* Stats */}
-              <motion.div 
-                variants={staggerContainer}
-                className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-              >
-                {stats.map((stat, index) => (
-                  <motion.div 
-                    key={index}
-                    variants={fadeInUp}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 dark:border-gray-700/20"
-                  >
-                    <stat.icon className="h-6 w-6 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              <motion.div 
-                variants={fadeInUp}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-              >
-                <motion.button 
-                  whileHover={{ scale: 1.05, y: -2 }}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
-                  <Download className="h-5 w-5 group-hover:animate-bounce" />
-                  Download Resume
+                  📄 Resume
                 </motion.button>
-                
-                <motion.button 
-                  whileHover={{ scale: 1.05, y: -2 }}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => scrollToSection('projects')}
-                  className="group border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="px-8 py-4 border-2 border-blue-600 text-blue-600 dark:text-blue-400 rounded-full font-semibold hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 flex items-center gap-2"
                 >
-                  <Code className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                  View Projects
+                  🚀 View Projects
                 </motion.button>
-              </motion.div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => scrollToSection('contact')}
+                  className="px-8 py-4 border-2 border-purple-600 text-purple-600 dark:text-purple-400 rounded-full font-semibold hover:bg-purple-600 hover:text-white dark:hover:bg-purple-600 transition-all duration-300 flex items-center gap-2"
+                >
+                  📬 Contact Me
+                </motion.button>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -615,67 +408,69 @@ const Portfolio = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">About Me</motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <motion.div 
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={staggerContainer}
-                className="space-y-6"
-              >
-                <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  I'm Abhinav, a final-year Computer Science student at the University of Lucknow. 
-                  Passionate about building smart web applications and exploring Generative AI, I turn 
-                  ideas into impactful digital solutions.
-                </motion.p>
-                <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  I constantly upgrade my skills through hands-on projects, certifications, and 
-                  collaborative learning. My goal is to bridge the gap between traditional web 
-                  development and cutting-edge AI technologies.
-                </motion.p>
-
-                <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-                  <motion.div whileHover={{ scale: 1.05 }} className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg text-center group transition-transform duration-300">
-                    <Book className="h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto mb-2 group-hover:animate-pulse" />
-                    <h3 className="font-semibold text-sm">B.Tech CSE'26</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">@ University of Lucknow</p>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.05 }} className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg text-center group transition-transform duration-300">
-                    <Globe className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-2 group-hover:animate-pulse" />
-                    <h3 className="font-semibold text-sm">MERN Stack</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">Developer</p>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.05 }} className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg text-center group transition-transform duration-300">
-                    <Cpu className="h-8 w-8 text-purple-600 dark:text-purple-400 mx-auto mb-2 group-hover:animate-pulse" />
-                    <h3 className="font-semibold text-sm">Generative AI</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">Enthusiast</p>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-
-              <motion.div 
+              <motion.div
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeInUp}
-                className="flex justify-center"
+                className="space-y-6"
               >
-                <div className="relative">
-                  <div className="w-80 h-80 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-2xl">
-                    <div className="w-72 h-72 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
-                      <User className="h-32 w-32 text-gray-400" />
-                    </div>
-                  </div>
-                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
-                  </div>
+                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                  I'm Abhinav, a final-year Computer Science student at the University of Lucknow. 
+                  Passionate about building smart web applications and exploring Generative AI, I turn 
+                  ideas into impactful digital solutions.
+                </p>
+                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                  I constantly upgrade my skills through hands-on projects, certifications, and 
+                  collaborative learning. My goal is to bridge the gap between traditional web 
+                  development and cutting-edge AI technologies.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+                  <motion.div
+                    variants={scaleOnHover}
+                    whileHover="hover"
+                    className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+                  >
+                    <h3 className="font-semibold text-blue-600 dark:text-blue-400">🎓 B.Tech CSE'26</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">@ LU</p>
+                  </motion.div>
+                  <motion.div
+                    variants={scaleOnHover}
+                    whileHover="hover"
+                    className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg"
+                  >
+                    <h3 className="font-semibold text-green-600 dark:text-green-400">🌐 MERN Stack</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Developer</p>
+                  </motion.div>
+                  <motion.div
+                    variants={scaleOnHover}
+                    whileHover="hover"
+                    className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg"
+                  >
+                    <h3 className="font-semibold text-purple-600 dark:text-purple-400">🤖 Generative AI</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Enthusiast</p>
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeInUp}
+                className="relative"
+              >
+                <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center">
+                  <User size={120} className="text-gray-400 dark:text-gray-600" />
                 </div>
               </motion.div>
             </div>
@@ -689,91 +484,75 @@ const Portfolio = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
-              <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Here are some of my recent projects showcasing my skills in web development and AI integration.
-              </motion.p>
+              </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={staggerContainer}
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {projects.map((project, index) => (
-                <motion.div 
-                  key={index} 
-                  variants={fadeInUp}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className={`group bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
-                    project.featured ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
-                  }`}
-                >
-                  {project.featured && (
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold px-3 py-1 text-center">
-                      Featured Project
-                    </div>
-                  )}
+              {projects.map((project, index) => {
+                const Icon = project.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={fadeInUp}
+                    whileHover={{ y: -10 }}
+                    className="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-4">
+                          <Icon size={24} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">{project.title}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{project.subtitle}</p>
+                        </div>
+                      </div>
 
-                  <div className="p-6">
-                    <div className="flex items-center mb-4">
-                      <motion.div 
-                        whileHover={{ scale: 1.1, rotate: 10 }}
-                        className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg mr-4"
-                      >
-                        <project.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                      </motion.div>
-                      <div>
-                        <h3 className="text-xl font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {project.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{project.subtitle}</p>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                        {project.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.tech.map((tech, techIndex) => (
+                          <span key={techIndex} className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-gray-700 dark:text-gray-300">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-3">
+                        <a
+                          href={project.github}
+                          className="flex items-center gap-1 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors text-sm"
+                        >
+                          <Github size={16} />
+                          GitHub
+                        </a>
+                        <a
+                          href={project.live}
+                          className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        >
+                          <ExternalLink size={16} />
+                          Live Demo
+                        </a>
                       </div>
                     </div>
-
-                    <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tech.map((tech, techIndex) => (
-                        <span key={techIndex} className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/20 transition-colors">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-4">
-                      <motion.a 
-                        href={project.github} 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/link"
-                      >
-                        <Github className="h-4 w-4 group-hover/link:animate-pulse" />
-                        GitHub
-                      </motion.a>
-                      <motion.a 
-                        href={project.live} 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/link"
-                      >
-                        <ExternalLink className="h-4 w-4 group-hover/link:animate-pulse" />
-                        Live Demo
-                      </motion.a>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
@@ -785,57 +564,36 @@ const Portfolio = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">Skills & Technologies</motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Skills & Technologies</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={staggerContainer}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="space-y-8"
             >
-              {skillCategories.map((category, index) => (
-                <motion.div 
-                  key={index} 
+              {Object.entries(skills).map(([category, skillList], index) => (
+                <motion.div
+                  key={category}
                   variants={fadeInUp}
-                  whileHover={{ y: -5 }}
-                  className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-lg transition-all duration-300 group"
+                  className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6"
                 >
-                  <div className="flex items-center mb-6">
-                    <motion.div 
-                      whileHover={{ scale: 1.1, rotate: 10 }}
-                      className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg mr-4"
-                    >
-                      <category.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </motion.div>
-                    <h3 className="text-xl font-bold">{category.category}</h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {skill.name}
-                          </span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            {skill.level}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                          <motion.div 
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${skill.level}%` }}
-                            transition={{ duration: 1, delay: skillIndex * 0.1 }}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full"
-                          />
-                        </div>
-                      </div>
+                  <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">{category}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {skillList.map((skill, skillIndex) => (
+                      <motion.span
+                        key={skillIndex}
+                        whileHover={{ scale: 1.05 }}
+                        className="px-3 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                      >
+                        {skill}
+                      </motion.span>
                     ))}
                   </div>
                 </motion.div>
@@ -851,71 +609,57 @@ const Portfolio = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">Work Experience</motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={staggerContainer}
               className="space-y-8"
             >
-              {experience.map((exp, index) => (
-                <motion.div 
-                  key={index} 
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
-                >
-                  <div className="flex items-start space-x-4">
-                    <motion.div 
-                      whileHover={{ scale: 1.1, rotate: 10 }}
-                      className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg"
-                    >
-                      <exp.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                          {exp.title}
-                        </h3>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {exp.period}
-                        </span>
+              {experience.map((exp, index) => {
+                const Icon = exp.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={fadeInUp}
+                    className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon size={24} className="text-white" />
                       </div>
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                        <p className="text-lg font-medium text-blue-600 dark:text-blue-400">
-                          {exp.company}
-                        </p>
-                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                          <span className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded-full text-xs mr-2">
+                      <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">{exp.title}</h3>
+                          <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">{exp.period}</span>
+                        </div>
+                        <div className="flex items-center gap-4 mb-3">
+                          <p className="text-lg text-gray-700 dark:text-gray-300 font-medium">{exp.company}</p>
+                          <span className="text-sm bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-2 py-1 rounded">
                             {exp.type}
                           </span>
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {exp.location}
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">{exp.description}</p>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-gray-900 dark:text-white">Key Responsibilities:</h4>
+                          <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                            {exp.responsibilities.map((resp, respIndex) => (
+                              <li key={respIndex}>{resp}</li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-400 mb-4">
-                        {exp.description}
-                      </p>
-                      <div className="space-y-2">
-                        {exp.responsibilities.map((resp, respIndex) => (
-                          <div key={respIndex} className="flex items-start">
-                            <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{resp}</span>
-                          </div>
-                        ))}
-                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
@@ -927,86 +671,74 @@ const Portfolio = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">Certifications</motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
-              <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400">
-                Professional certifications and achievements
-              </motion.p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Certifications</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={staggerContainer}
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {certifications.map((cert, index) => (
-                <motion.div 
-                  key={index} 
-                  variants={fadeInUp}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-lg transition-all duration-300 group border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="flex items-center mb-4">
-                    <motion.div 
-                      whileHover={{ scale: 1.2, rotate: 10 }}
-                      className="text-3xl mr-3"
-                    >
-                      {cert.icon}
-                    </motion.div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-sm leading-tight">
-                        {cert.title}
-                      </h3>
-                      <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
-                        {cert.issuer}
-                      </p>
+              {certifications.map((cert, index) => {
+                const Icon = cert.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={fadeInUp}
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+                        <Icon size={20} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{cert.date}</span>
+                          {cert.link && (
+                            <a
+                              href={cert.link}
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                            >
+                              <ExternalLink size={16} />
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {cert.date}
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {cert.skills.map((skill, skillIndex) => (
-                      <span key={skillIndex} className="text-xs bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-full">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Credential ID: {cert.credentialId}
-                  </div>
-                </motion.div>
-              ))}
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-2">{cert.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-2">{cert.issuer}</p>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Credential ID: {cert.credentialId}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <section id="contact" className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={staggerContainer}
+              variants={fadeInUp}
               className="text-center mb-16"
             >
-              <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
-                Get In Touch
-              </motion.h2>
-              <motion.div variants={fadeInUp} className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></motion.div>
-              <motion.p variants={fadeInUp} className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                Have a project in mind or want to collaborate? I'd love to hear from you!
-              </motion.p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Let's connect! I'm open to internships, freelance work, or just a chat about tech.
+              </p>
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-12">
@@ -1016,89 +748,64 @@ const Portfolio = () => {
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeInUp}
-                className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8"
+                className="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg"
               >
-                <h3 className="text-2xl font-bold mb-6">Send Message</h3>
-                <form ref={formRef} onSubmit={handleFormSubmit} className="space-y-6">
+                <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Send a Message</h3>
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Name
                     </label>
                     <input
                       type="text"
-                      id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                      placeholder="Your Name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Email
                     </label>
                     <input
                       type="email"
-                      id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                      placeholder="your.email@example.com"
                     />
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Message
                     </label>
                     <textarea
-                      id="message"
                       name="message"
-                      rows={4}
                       value={formData.message}
                       onChange={handleFormChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-                    ></textarea>
+                      rows={5}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"
+                      placeholder="Your message..."
+                    />
                   </div>
-                  <motion.button
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-md font-semibold flex items-center justify-center gap-2 transition-colors"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    {isSubmitting ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                      />
-                    ) : (
-                      <Send className="h-5 w-5" />
-                    )}
                     {isSubmitting ? 'Sending...' : 'Send Message'}
-                  </motion.button>
-                  
+                  </button>
                   {submitStatus === 'success' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-green-600 dark:text-green-400 text-center"
-                    >
-                      Message sent successfully!
-                    </motion.div>
+                    <p className="text-green-600 dark:text-green-400 text-center">Message sent successfully!</p>
                   )}
-                  
                   {submitStatus === 'error' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-red-600 dark:text-red-400 text-center"
-                    >
-                      Failed to send message. Please try again.
-                    </motion.div>
+                    <p className="text-red-600 dark:text-red-400 text-center">Failed to send message. Please try again.</p>
                   )}
                 </form>
               </motion.div>
@@ -1108,109 +815,95 @@ const Portfolio = () => {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                variants={staggerContainer}
+                variants={fadeInUp}
                 className="space-y-8"
               >
-                <motion.div variants={fadeInUp}>
-                  <h3 className="text-2xl font-bold mb-6">Let's Connect</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-8">
-                    I'm always open to discussing new opportunities, creative ideas or partnerships.
-                  </p>
-                </motion.div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Contact Information</h3>
+                  <div className="space-y-4">
+                    <a
+                      href="mailto:abhinavc037@gmail.com"
+                      className="flex items-center gap-3 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <Mail className="text-blue-600" size={20} />
+                      <span className="text-gray-900 dark:text-white">abhinavc037@gmail.com</span>
+                    </a>
 
-                <motion.div variants={fadeInUp} className="space-y-4">
-                  <motion.a
-                    href="mailto:abhinavc037@gmail.com"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    className="flex items-center space-x-4 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <Mail className="h-6 w-6" />
-                    <span>abhinavc037@gmail.com</span>
-                  </motion.a>
-                  
-                  <motion.a
-                    href="https://github.com/Abhinav-Chaurasia-220304"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    className="flex items-center space-x-4 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <Github className="h-6 w-6" />
-                    <span>GitHub</span>
-                  </motion.a>
-                  
-                  <motion.a
-                    href="https://www.linkedin.com/in/abhinav-chaurasia-83741b257"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    className="flex items-center space-x-4 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <Linkedin className="h-6 w-6" />
-                    <span>LinkedIn</span>
-                  </motion.a>
+                    <a
+                      href="https://github.com/Abhinav-Chaurasia-220304"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <Github className="text-gray-800 dark:text-gray-200" size={20} />
+                      <span className="text-gray-900 dark:text-white">@Abhinav-Chaurasia-220304</span>
+                    </a>
 
-                  <motion.a
-                    href="https://x.com/Abhinav_C_22"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, x: 10 }}
-                    className="flex items-center space-x-4 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <Twitter className="h-6 w-6" />
-                    <span>Twitter</span>
-                  </motion.a>
-                </motion.div>
+                    <a
+                      href="https://www.linkedin.com/in/abhinav-chaurasia-83741b257"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <Linkedin className="text-blue-600" size={20} />
+                      <span className="text-gray-900 dark:text-white">@AbhinavChaurasia</span>
+                    </a>
+
+                    <a
+                      href="https://x.com/Abhinav_C_22"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <Twitter className="text-blue-400" size={20} />
+                      <span className="text-gray-900 dark:text-white">@Abhinav_C_22</span>
+                    </a>
+                  </div>
+                </div>
               </motion.div>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 dark:bg-black text-white py-8">
+        <footer className="bg-gray-900 dark:bg-black text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="mb-4 md:mb-0">
-                <p className="text-gray-400">
-                  © 2025 Abhinav Chaurasia. Built with ❤️ using React & TailwindCSS
-                </p>
+            <div className="text-center">
+              <div className="flex justify-center items-center gap-6 mb-6">
+                <a
+                  href="mailto:abhinavc037@gmail.com"
+                  className="p-3 bg-gray-800 dark:bg-gray-800 rounded-full hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Mail size={20} />
+                </a>
+                <a
+                  href="https://github.com/Abhinav-Chaurasia-220304"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-gray-800 dark:bg-gray-800 rounded-full hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Github size={20} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/abhinav-chaurasia-83741b257"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-gray-800 dark:bg-gray-800 rounded-full hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Linkedin size={20} />
+                </a>
+                <a
+                  href="https://x.com/Abhinav_C_22"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-gray-800 dark:bg-gray-800 rounded-full hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Twitter size={20} />
+                </a>
               </div>
-              <div className="flex space-x-6">
-                <motion.a 
-                  href="https://github.com/Abhinav-Chaurasia-220304" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <Github className="h-5 w-5" />
-                </motion.a>
-                <motion.a 
-                  href="https://www.linkedin.com/in/abhinav-chaurasia-83741b257" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <Linkedin className="h-5 w-5" />
-                </motion.a>
-                <motion.a 
-                  href="https://x.com/Abhinav_C_22" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </motion.a>
-                <motion.a 
-                  href="mailto:abhinavc037@gmail.com" 
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <Mail className="h-5 w-5" />
-                </motion.a>
-              </div>
+              <p className="text-gray-400">
+                © 2025 Abhinav Chaurasia | Built with ❤️ using React & TailwindCSS
+              </p>
             </div>
           </div>
         </footer>
@@ -1222,30 +915,44 @@ const Portfolio = () => {
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={scrollToTop}
-              className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50"
-              aria-label="Back to top"
+              onClick={() => scrollToSection('home')}
+              className="fixed bottom-8 right-8 p-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50"
             >
-              <ArrowUp className="h-6 w-6" />
+              <ChevronUp size={24} />
             </motion.button>
           )}
         </AnimatePresence>
+
+        {/* Custom CSS for animations */}
+        <style jsx>{`
+          @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+            animation-delay: 4s;
+          }
+          .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          html {
+            scroll-behavior: smooth;
+          }
+        `}</style>
       </div>
     </div>
   );
 };
 
-// Main App component with Router
-const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Portfolio />} />
-      </Routes>
-    </Router>
-  );
-};
-
-export default App;
+export default Portfolio;
