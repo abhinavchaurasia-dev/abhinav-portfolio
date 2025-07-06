@@ -6,7 +6,12 @@ import { fadeInUp } from '../../utils/animations';
 import emailjs from 'emailjs-com';
 
 const ContactSection = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    subject: '', 
+    message: '' 
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const formRef = useRef();
@@ -20,7 +25,7 @@ const ContactSection = () => {
     setIsSubmitting(true);
     setSubmitStatus('');
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
       setSubmitStatus('validation_error');
       setIsSubmitting(false);
       return;
@@ -28,20 +33,21 @@ const ContactSection = () => {
 
     try {
       const result = await emailjs.send(
-        'service_your_id',
-        'template_your_id',
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
           from_name: formData.name,
           from_email: formData.email,
+          subject: formData.subject,
           message: formData.message,
-          to_email: 'abhinavc037@gmail.com',
+          to_email: 'abhinav.dev.contact@gmail.com',
         },
-        'your_public_key'
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
       if (result.status === 200) {
         setSubmitStatus('success');
-        setFormData({ name: '', email: '', message: '' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setSubmitStatus(''), 5000);
       }
     } catch (error) {
@@ -110,6 +116,20 @@ const ContactSection = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="Subject of your message"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Message
                 </label>
                 <textarea
@@ -147,6 +167,7 @@ const ContactSection = () => {
             </form>
           </motion.div>
 
+
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -157,13 +178,7 @@ const ContactSection = () => {
             <div>
               <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Contact Information</h3>
               <div className="space-y-4">
-                <a
-                  href="mailto:abhinavc037@gmail.com"
-                  className="flex items-center gap-3 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <Mail className="text-blue-600" size={20} />
-                  <span className="text-gray-900 dark:text-white">abhinavc037@gmail.com</span>
-                </a>
+
 
                 <a
                   href="https://github.com/Abhinav-Chaurasia-220304"

@@ -3,6 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { User } from 'lucide-react';
 import { fadeInUp, scaleOnHover } from '../../utils/animations';
+import profilePhoto from '../../assets/profilePhoto.jpg';
+
 
 const AboutSection = () => {
   return (
@@ -66,20 +68,26 @@ const AboutSection = () => {
             </div>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="relative"
-          >
-            <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center overflow-hidden">
-              <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                <User size={80} className="text-white" />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-              </div>
-            </div>
-          </motion.div>
+<motion.div
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  variants={fadeInUp}
+  className="relative"
+>
+  <div className="w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center overflow-hidden relative">
+    <div className="relative bg-gradient-to-br from-blue-500 to-purple-500 p-1 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
+      <div className="w-64 h-64 rounded-3xl overflow-hidden">
+        <img
+          src="/src/assets/profilePhoto.jpg"
+          alt="Abhinav - Profile Photo"
+          className="w-full h-full object-cover object-center"
+          style={{ objectPosition: 'center 20%' }}
+        />
+      </div>
+    </div>
+  </div>
+</motion.div>
         </div>
       </div>
     </section>

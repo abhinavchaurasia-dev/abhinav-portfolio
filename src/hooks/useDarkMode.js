@@ -1,56 +1,39 @@
-
 import { useState, useEffect } from 'react';
 
-export const useDarkMode = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedMode = localStorage.getItem('darkMode');
-      if (savedMode !== null) {
-        return savedMode === 'true';
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+const useDarkMode = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('darkMode', isDarkMode.toString());
+    // Check localStorage and system preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    const initialDarkMode = savedTheme ? savedTheme === 'dark' : prefersDark;
+    
+    setIsDarkMode(initialDarkMode);
+    updateTheme(initialDarkMode);
+  }, []);
 
-      document.documentElement.classList.remove('dark');
-      if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-      }
-
-      // Add structured data for SEO
-      const structuredData = {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Abhinav Chaurasia",
-        "jobTitle": "Web Developer & AI Explorer",
-        "description": "B.Tech CSE student crafting future-ready web solutions and building with AI innovations",
-        "url": "https://abhinavchaurasia.vercel.app",
-        "sameAs": [
-          "https://github.com/Abhinav-Chaurasia-220304",
-          "https://www.linkedin.com/in/abhinav-chaurasia-83741b257",
-          "https://x.com/Abhinav_C_22"
-        ],
-        "alumniOf": "University of Lucknow",
-        "knowsAbout": ["Web Development", "React", "Node.js", "MongoDB", "Artificial Intelligence", "JavaScript", "Python"],
-        "email": "abhinavc037@gmail.com"
-      };
-
-      const script = document.createElement('script');
-      script.type = 'application/ld+json';
-      script.textContent = JSON.stringify(structuredData);
-
-      const existingScript = document.querySelector('script[type="application/ld+json"]');
-      if (existingScript) {
-        existingScript.remove();
-      }
-      document.head.appendChild(script);
+  const updateTheme = (darkMode) => {
+    const root = document.documentElement;
+    
+    if (darkMode) {
+      root.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
     }
-  }, [isDarkMode]);
+  };
 
-  return { isDarkMode, setIsDarkMode };
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    updateTheme(newMode);
+  };
+
+  return [isDarkMode, setIsDarkMode, toggleDarkMode];
 };
+
+export { useDarkMode };
+export default useDarkMode;
