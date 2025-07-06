@@ -79,7 +79,7 @@ const AboutSection = () => {
     <div className="relative bg-gradient-to-br from-blue-500 to-purple-500 p-1 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
       <div className="w-64 h-64 rounded-3xl overflow-hidden">
         <img
-          src="/src/assets/profilePhoto.jpg"
+          src={profilePhoto}
           alt="Abhinav - Profile Photo"
           className="w-full h-full object-cover object-center"
           style={{ objectPosition: 'center 20%' }}
