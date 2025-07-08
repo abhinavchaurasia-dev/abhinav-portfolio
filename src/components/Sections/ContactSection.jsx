@@ -9,9 +9,10 @@ const ContactSection = () => {
     name: '', 
     email: '', 
     subject: '', 
-    message: '',
-    honeypot: '' // Honeypot field
+    message: ''
   });
+  // Separate honeypot state that's not part of formData
+  const [honeypot, setHoneypot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
@@ -40,27 +41,61 @@ const ContactSection = () => {
   // Load reCAPTCHA v2 script
   useEffect(() => {
     const loadRecaptcha = () => {
-      if (window.grecaptcha) return;
+      // Check if already loaded
+      if (window.grecaptcha) {
+        renderRecaptcha();
+        return;
+      }
+      
+      // Check if script is already being loaded
+      if (document.querySelector('script[src*="recaptcha"]')) {
+        return;
+      }
       
       const script = document.createElement('script');
-      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
       script.async = true;
       script.defer = true;
-      script.onload = () => {
-        // Render reCAPTCHA v2 widget
-        if (window.grecaptcha && recaptchaRef.current) {
+      
+      // Global callback for reCAPTCHA load
+      window.onRecaptchaLoad = () => {
+        renderRecaptcha();
+      };
+      
+      document.head.appendChild(script);
+    };
+
+    const renderRecaptcha = () => {
+      if (window.grecaptcha && recaptchaRef.current && !recaptchaRef.current.hasChildNodes()) {
+        try {
           window.grecaptcha.render(recaptchaRef.current, {
             sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
             callback: handleRecaptchaChange,
             'expired-callback': handleRecaptchaExpired,
             'error-callback': handleRecaptchaError
           });
+        } catch (error) {
+          console.error('reCAPTCHA render error:', error);
+          setValidationErrors(prev => ({
+            ...prev,
+            recaptcha: 'reCAPTCHA failed to load. Please refresh the page.'
+          }));
         }
-      };
-      document.head.appendChild(script);
+      }
     };
 
-    loadRecaptcha();
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      loadRecaptcha();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      // Clean up global callback
+      if (window.onRecaptchaLoad) {
+        delete window.onRecaptchaLoad;
+      }
+    };
   }, []);
 
   // Handle reCAPTCHA v2 callback
@@ -96,8 +131,26 @@ const ContactSection = () => {
   // Reset reCAPTCHA
   const resetRecaptcha = () => {
     if (window.grecaptcha) {
-      window.grecaptcha.reset();
-      setRecaptchaToken('');
+      try {
+        window.grecaptcha.reset();
+        setRecaptchaToken('');
+      } catch (error) {
+        console.error('reCAPTCHA reset error:', error);
+        // Force reload the widget if reset fails
+        if (recaptchaRef.current) {
+          recaptchaRef.current.innerHTML = '';
+          setTimeout(() => {
+            if (window.grecaptcha) {
+              window.grecaptcha.render(recaptchaRef.current, {
+                sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+                callback: handleRecaptchaChange,
+                'expired-callback': handleRecaptchaExpired,
+                'error-callback': handleRecaptchaError
+              });
+            }
+          }, 100);
+        }
+      }
     }
   };
 
@@ -118,8 +171,8 @@ const ContactSection = () => {
   const validateForm = () => {
     const errors = {};
     
-    // Check honeypot
-    if (formData.honeypot) {
+    // Check honeypot - if it has any value, it's likely a bot
+    if (honeypot) {
       errors.honeypot = errorMessages.honeypot;
       return errors;
     }
@@ -151,6 +204,11 @@ const ContactSection = () => {
     }
     
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle honeypot field changes (separate handler)
+  const handleHoneypotChange = (e) => {
+    setHoneypot(e.target.value);
   };
 
   // Handle field blur (validation on blur)
@@ -220,7 +278,8 @@ const ContactSection = () => {
 
       if (result.status === 200) {
         setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setHoneypot(''); // Reset honeypot
         resetRecaptcha(); // Reset reCAPTCHA after successful submission
         setTimeout(() => setSubmitStatus(''), 5000);
       }
@@ -261,15 +320,37 @@ const ContactSection = () => {
           >
             <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Send a Message</h3>
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-              {/* Honeypot field - hidden from users */}
-              <div style={{ display: 'none' }}>
+              {/* Honeypot field - completely hidden and inaccessible */}
+              <div 
+                style={{ 
+                  position: 'absolute', 
+                  left: '-9999px', 
+                  top: '-9999px', 
+                  visibility: 'hidden',
+                  opacity: 0,
+                  height: 0,
+                  width: 0,
+                  overflow: 'hidden'
+                }}
+                aria-hidden="true"
+              >
                 <input
                   type="text"
-                  name="honeypot"
-                  value={formData.honeypot}
-                  onChange={handleFormChange}
+                  name="website"
+                  value={honeypot}
+                  onChange={handleHoneypotChange}
                   tabIndex="-1"
                   autoComplete="off"
+                  placeholder="Leave this field empty"
+                  style={{ 
+                    position: 'absolute',
+                    left: '-9999px',
+                    top: '-9999px',
+                    visibility: 'hidden',
+                    opacity: 0,
+                    height: 0,
+                    width: 0
+                  }}
                 />
               </div>
 
@@ -381,10 +462,17 @@ const ContactSection = () => {
 
               {/* reCAPTCHA v2 Widget */}
               <div className="flex justify-center">
-                <div 
-                  ref={recaptchaRef}
-                  className={`${validationErrors.recaptcha ? 'ring-2 ring-red-500 rounded' : ''}`}
-                ></div>
+                <div className="text-center">
+                  <div 
+                    ref={recaptchaRef}
+                    className={`inline-block ${validationErrors.recaptcha ? 'ring-2 ring-red-500 rounded' : ''}`}
+                  ></div>
+                  {!window.grecaptcha && (
+                    <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                      Loading reCAPTCHA...
+                    </div>
+                  )}
+                </div>
               </div>
               
               {validationErrors.recaptcha && (
